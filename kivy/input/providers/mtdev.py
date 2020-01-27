@@ -113,7 +113,7 @@ else:
             if not args:
                 Logger.error('MTD: No filename pass to MTD configuration')
                 Logger.error('MTD: Use /dev/input/event0 for example')
-                return None
+                return
 
             # read filename
             self.input_fn = args[0]
@@ -220,7 +220,10 @@ else:
                     queue.append((action, touch))
 
             def normalize(value, vmin, vmax):
-                return (value - vmin) / float(vmax - vmin)
+                try:
+                    return (value - vmin) / float(vmax - vmin)
+                except ZeroDivisionError:  # it's both in py2 and py3
+                    return (value - vmin)
 
             # open mtdev device
             _fn = input_fn
